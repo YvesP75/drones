@@ -6,6 +6,18 @@ import pandas as pd
 
 import numpy as np
 
+import copy
+import imageio
+import base64
+import IPython
+
+
+from acme import environment_loop
+from acme import networks
+from acme.adders import reverb as adders
+from acme.agents import actors_tf2 as actors
+from acme.datasets import reverb as datasets
+from acme.wrappers import gym_wrapper
 from acme import specs
 
 #import ad hoc files
@@ -98,22 +110,22 @@ class Environment:
         return self.steps_left==0
 
 
-    def observation_spec(self):
-        '''
+    '''
             l'observation donne une vue simplifiée de la croyance par voiture à partir de sa position initiale
             la croyanve évolue de manière centripète
                 - le poids du secteur (integer de 1 à 10)
                 - l'indice de la couronne qui permet de dépasser 20% du poids total (integer de 1 à 10)
                 - l'indice de la couronne qui permet de dépasser 80% du poids total (integer de 1 à 10)
-       '''
-       return  self.environment_spec.observations
+    '''
+    def observation_spec(self):
+        return  self.environment_spec.observations
 
 
     def reward_spec(self):
-       return  self.environment_spec.rewards
+        return  self.environment_spec.rewards
 
-     def discount_spec(self):
-         return  self.environment_spec.discounts
+    def discount_spec(self):
+        return  self.environment_spec.discounts
 
     def action_spec():
         return self.environment_spec.actions

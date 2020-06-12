@@ -1,5 +1,5 @@
 #temps de simulation
-TIME_LENGTH=30
+TIME_LENGTH=5
 
 #taille du quadrillage
 SIZE=SIZE_X=SIZE_Y=20
