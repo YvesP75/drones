@@ -162,11 +162,12 @@ class Environment:
     def get_observations_points(self, time_index):
         obs = []
         for car in self.cars:
-            obs=np.concatenate((obs, car.get_observation_points(time_index)))
+            obs = np.concatenate((obs, car.get_observation_points(time_index)))
         df = pd.DataFrame(
                  np.array(Util.z_to_latlon(obs)).T,
                  columns=['lat', 'lon'])
         return df
+
 
 class Environment_spec:
 

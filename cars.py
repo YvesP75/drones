@@ -149,7 +149,7 @@ class Cars:
             self.belief.append(belief)
             self.loss.append(loss)
             self.positions.append(new_position)
-            
+
     # crée le "radar" autour de la voiture pour exprimer une vision
     # simplifiée de la croyance en observation pour le renforcement
     def create_radar(self, car_X, car_Y):
@@ -178,19 +178,19 @@ class Cars:
                 car_space,
                 sector_index,
                 sector_angle
-                ) 
+                )
             )
         points = [
             [
             self.car_z
-            +crown_index*crown_size*SCALE * 
+            +crown_index*crown_size*SCALE *
                 np.exp(1j* (sector_index + 0.5) *sector_angle)
             for crown_index in  range(NUMBER_OF_CROWNS)
             ] for sector_index in range(NUMBER_OF_SECTORS)
-                
+
         ]
-        
-        return crowns, sectors, points     
+
+        return crowns, sectors, points
 
 
     def get_observation(self):
@@ -213,23 +213,21 @@ class Cars:
             for _ in range(NUMBER_OF_SECTORS):
                 np.concatenate((obs, [0, 0, NUMBER_OF_SECTORS-1]))
         obs = np.cast[int](obs)
-   
+
         self.observations.append(obs)
         return obs
-   
-    
+
     def get_observation_points(self, time_index):
-        obs_points=[]
+        obs_points = []
         for sector_index in range(NUMBER_OF_SECTORS):
             obs_points.append(
                 self.points
-                    [sector_index] 
+                    [sector_index]
                     [self.observations[time_index][sector_index*3 +1]]
             )
             obs_points.append(
                 self.points
-                    [sector_index] 
-                    [self.observations[time_index][sector_index*3 +2]]   
+                    [sector_index]
+                    [self.observations[time_index][sector_index*3 +2]]
             )
         return obs_points
-        
