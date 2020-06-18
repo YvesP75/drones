@@ -92,11 +92,19 @@ class Layers:
             get_color='[200, 30, 00, 160]',
             get_radius=20,
         )
+        observations_layer = pdk.Layer(
+            'ScatterplotLayer',
+            data=env.get_observations_points(time_index),
+            get_position='[lon, lat]',
+            get_color='[250, 200, 00, 255]',
+            get_radius=80,
+            )
         self.layers = [
             cars_layer,
             visibility_layer,
             drones_layer,
-            second_eyes_layer
+            second_eyes_layer,
+            observations_layer
             ]
 
 

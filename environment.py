@@ -10,11 +10,11 @@ import pandas as pd
 # from acme.agents import actors_tf2 as actors
 # from acme.datasets import reverb as datasets
 # from acme.wrappers import gym_wrapper
-from acme import specs
+# from acme import specs
 
 # import ad hoc files
-from settings import NUMBER_OF_SECTORS, _FIRST, MID, LAST, SECOND_EYE
-from settings import LOW, HIGH, TIME_LENGTH, SIZE_X, SIZE_Y, NUMBER_OF_CROWNS
+from settings import FIRST, MID, LAST, SECOND_EYE
+from settings import TIME_LENGTH, SIZE_X, SIZE_Y
 from util import Util
 from cars import Cars
 from drones import Drones
@@ -24,10 +24,13 @@ class Environment:
 
     def __init__(self, drones_positions, cars_inits):
         self.steps_left = TIME_LENGTH
-        self.cars = [Cars(car_init) for car_init in cars_inits]  # Cars(car_z)
+        # création des voitures
+        self.cars = [Cars(car_init) for car_init in cars_inits]
+        # création des drones
         self.drones = [Drones(drone_z, 0) for drone_z in drones_positions]
-        self.visibilities = [np.zeros((SIZE_X, SIZE_Y)) < 0]
         # la visibilité au niveau env est le cumul des visibiités des drones
+        self.visibilities = [np.zeros((SIZE_X, SIZE_Y)) < 0]
+        # pour se lier avec la librairie Acme
         self.spec = Environment_spec(
             number_of_drones=len(drones_positions),
             number_of_cars=len(cars_inits)
@@ -74,7 +77,7 @@ class Environment:
         if self.steps_left == 0:
             return LAST
         elif self.steps_left == TIME_LENGTH:
-            return _FIRST
+            return FIRST
         else:
             return MID
 
@@ -103,41 +106,9 @@ class Environment:
     #   - l'indice de la couronne à partir duquel on a plus de 80% de croyance
     # ces 3 valeurs sont calculées pour chacune des voitures
     def get_observation(self):  # attention, checker les nombres de crowns
-        crown_size = min(SIZE_X, SIZE_Y)/NUMBER_OF_CROWNS*2/3
-        sector_size = 2*np.pi/NUMBER_OF_SECTORS
         obs = []
         for car in self.cars:
-            if car.alive[-1] == 0:  # si la voiture est vivante
-                filter = Util.arrayspace(
-                    car.positions[0][1],
-                    car.positions[0][0],
-                    SIZE_Y,
-                    SIZE_X)
-                for sector_index in range(NUMBER_OF_SECTORS):
-                    car_sector = max(Util.mysector(
-                        filter,
-                        sector_index*sector_size,
-                        sector_size)
-                        * car.positions[-1], 1)
-                    car_sector_presence = np.sum(car_sector)
-                    distri = [np.sum(Util.mycrown(
-                        car_sector,
-                        crown,
-                        crown_size))
-                        for crown in
-                        range(0, NUMBER_OF_CROWNS*crown_size, crown_size)]
-                    np.concatenate(
-                        obs,
-                        int(car_sector_presence*NUMBER_OF_SECTORS),
-                        Util.get_interval(
-                            distri,
-                            LOW*car_sector_presence,
-                            HIGH*car_sector_presence
-                        )
-                    )
-            else:
-                for _ in range(NUMBER_OF_SECTORS):
-                    np.concatenate(obs, [0, 0, NUMBER_OF_SECTORS-1])
+            obs.append(car.get_observation())
         return obs
 
     def get_actions(self):  # pas utilisé par Acme??
@@ -188,6 +159,14 @@ class Environment:
                 )).T,
             columns=['lat', 'lon'])
 
+    def get_observations_points(self, time_index):
+        obs = []
+        for car in self.cars:
+            obs=np.concatenate((obs, car.get_observation_points(time_index)))
+        df = pd.DataFrame(
+                 np.array(Util.z_to_latlon(obs)).T,
+                 columns=['lat', 'lon'])
+        return df
 
 class Environment_spec:
 
@@ -221,6 +200,7 @@ class Environment_spec:
         )
         '''
 
+
 class TimeStep:
 
     def __init__(self, step_type):
@@ -233,4 +213,4 @@ class TimeStep:
         return self.step_type == MID
 
     def first(self):
-        return self.step_type == _FIRST
+        return self.step_type == FIRST

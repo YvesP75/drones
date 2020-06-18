@@ -1,11 +1,11 @@
 # temps de simulation
-TIME_LENGTH = 5
+TIME_LENGTH = 10
 
 # taille du quadrillage
-SIZE = SIZE_X = SIZE_Y = 20
+SIZE = SIZE_X = SIZE_Y = 10
 
 ###
-TIME_SLEEP = 0.01
+TIME_SLEEP = 1
 
 ZERO_X = 2.25125
 ZERO_Y = 48.8130
@@ -36,12 +36,12 @@ VIEW_LENGTH = 500
 
 # Indicateur de la position du step
 # à changer pour s'aligner sur l'API Acme
-_FIRST = -1
+FIRST = -1
 MID = 0
 LAST = 1
 
 # Interface HM
-MAPBOX_KEY =    'pk.eyJ1IjoieXZlc3A3NSIsImEiOiJja2EzcGE3cGowMGpwM2ZvMmc2bGpsZjVpIn0.H0xY3gvvr4Ajtj6hKgMEhA'
+MAPBOX_KEY = 'pk.eyJ1IjoieXZlc3A3NSIsImEiOiJja2EzcGE3cGowMGpwM2ZvMmc2bGpsZjVpIn0.H0xY3gvvr4Ajtj6hKgMEhA'
 
 COLOR_BREWER_BLUE_SCALE = [
     [240, 249, 232],
@@ -53,6 +53,6 @@ COLOR_BREWER_BLUE_SCALE = [
 ]
 
 NUMBER_OF_SECTORS = 8
-NUMBER_OF_CROWNS = 10
+NUMBER_OF_CROWNS = 8
 HIGH = 0.8
 LOW = 0.2

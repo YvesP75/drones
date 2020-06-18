@@ -1,4 +1,3 @@
-
 # -*- coding: ISO-8859-1 -*-
 import sys
 import getopt
@@ -8,27 +7,34 @@ from environment import Environment
 from agent import Agent
 from show import Show
 
+DRONES = [8500+5500j, 8000+5300j, 4000+2000j]
+CARS = [[8200+4500j, 0]]
+LONG_DRONES = [8500+5500j, 8000+5300j, 4000+2000j, 5000+5000j, 2000+6000j,
+               8000+5000j, 7000+5000j, 3000+3000j]
+LONG_CARS = [[8200+4500j, 0], [4000+4400j, 35],
+             [3500+4400j, 34], [2800+3400j, 23]]
 
-def run_episode(drones, cars, go='False'):
+
+def run_episode(drones=DRONES, cars=CARS, go='True'):
     print(drones, cars, go)
     agent = Agent()
-    env = Environment(drones, cars)
+    env = Environment(DRONES, CARS)
     while not env.is_done():
         agent.step(env)
-
     if go:
         Show.run(env)
 
 
 def main(argv):
-    drones = [8500+5500j, 8000+5300j, 4000+2000j]
-    cars = [[8200+4500j, 0]]
-    long_drones = [8500+5500j, 8000+5300j, 4000+2000j, 5000+5000j, 2000+6000j,
-                   8000+5000j, 7000+5000j, 3000+3000j]
-    long_cars = [[8200+4500j, 0], [4000+4400j, 35],
-                 [3500+4400j, 34], [2800+3400j, 23]]
+    drones = DRONES,
+    cars = CARS,
+    print(cars)
+    print(cars[0])
+    print(drones)
+    print(drones[0])
+
     global _time_length
-    _time_length = 30
+    _time_length = 200
 
     try:
         opts, args = getopt.getopt(
@@ -44,22 +50,22 @@ def main(argv):
         elif opt in ('-c', '--cars'):
             cars = arg
         elif opt in ('-d', '--drones'):
-            drones = args
+            drones = arg
         elif opt in ('-C', '--longcars'):
-            cars = long_cars
+            cars = LONG_CARS
         elif opt in ('-D', '--longdrones'):
-            drones = long_drones
+            drones = LONG_DRONES
         elif opt in ('-L', '--long'):
             _time_length = 200
         elif opt in ('-t', '--time'):
             _time_length = arg
 
-    if argv == [] or argv[0] == 'False':
-        print('arg = False')
-        run_episode(drones, cars, False)
-    elif arg[0] == 'True':
-        print('arg = [True]')
+    if argv == [] or argv[0] == 'True':
+        print('arg = True')
         run_episode(drones, cars, True)
+    elif arg[0] == 'False':
+        print('arg = [False]')
+        run_episode(drones, cars, False)
     else:
         print(arg)
         print('default')

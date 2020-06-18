@@ -1,4 +1,4 @@
-
+# -*- coding: ISO-8859-1 -*-
 import numpy as np
 import pandas as pd
 
@@ -9,6 +9,10 @@ from settings import SCALE, ZERO_X, ZERO_Y
 class Util:
 
     # cree une matrice complexe (generalise linspace)
+    # arrayspace(1,2,3,3)
+    # array([[-1.-2.j,  0.-2.j,  1.-2.j],
+    #    [-1.-1.j,  0.-1.j,  1.-1.j],
+    #    [-1.+0.j,  0.+0.j,  1.+0.j]])
     def arrayspace(a, b, size_x, size_y):
         return (
             np.linspace(0, size_x-1, size_x)-a
@@ -20,13 +24,22 @@ class Util:
     mypos = np.frompyfunc(mypos, 1, 1)
 
     # permet de filtrer par secteur sur une matrice
-    def mysector(x, angle, delta):
-        return angle/4 < np.angle(x) < angle+delta
+    def mysector(x, angle_index, increment):
+        angle_x = np.angle(x)
+        if angle_x < 0:
+            angle_x += 2*np.pi
+        if angle_index*increment <= angle_x < (angle_index+1)*increment:
+            return 1
+        else:
+            return 0
     mysector = np.frompyfunc(mysector, 3, 1)
 
     # permet de filtrer par couronnes sur une matrice
-    def mycrown(x, ro, delta):
-        return ro < np.abs(x) < ro+delta
+    def mycrown(x, crown_index, increment):
+        if crown_index*increment <= np.abs(x) < (crown_index+1)*increment:
+            return 1
+        else:
+            return 0
     mycrown = np.frompyfunc(mycrown, 3, 1)
 
     # cumule les élements d'une liste
@@ -40,8 +53,8 @@ class Util:
         C, inf, sup = 0, len(arr)-1, len(arr)-1
         for i, x in enumerate(arr):
             C += x
-            if inf == -1:
-                if C > low:
+            if inf == len(arr)-1:
+                if C >= low:
                     inf = i
                 if C > high:
                     sup = i
@@ -49,8 +62,8 @@ class Util:
             elif C > high:
                 sup = i
                 break
-        return inf, sup
-
+        return [inf, sup]
+    
     # decale la matrice vers le haut ou le bas
     def shift(arr, row, col, fill_value=0):
         result = res = np.empty_like(arr)
@@ -99,7 +112,7 @@ class Util:
     def complex_outofbound(z, min, max):
         return (
             Util.real_outofbound(np.real(z), min, max)
-            +1j*Util.real_outofbound(np.imag(z), min, max)
+            + 1j * Util.real_outofbound(np.imag(z), min, max)
         )
 
     def z_to_latlon(z):
