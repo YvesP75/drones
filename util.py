@@ -63,7 +63,7 @@ class Util:
                 sup = i
                 break
         return [inf, sup]
-    
+
     # decale la matrice vers le haut ou le bas
     def shift(arr, row, col, fill_value=0):
         result = res = np.empty_like(arr)
